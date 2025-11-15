@@ -2,15 +2,15 @@
 
 Welcome to **Cosmo Suite**, a collection of post-processing routines for cosmology data.
 
-## Example Visualizations
+## Compton-y Map (Orthographic Projection)
 
-### Thermal Sunyaev-Zel’dovich (tSZ) Power Spectrum
+![Compton-y Map](Images/y_map_orthographic.png)
+
+
+## Thermal Sunyaev-Zel’dovich (tSZ) Power Spectrum
 
 ![tSZ Power Spectrum](Images/tSZ_spectrum.png)
 
-### Compton-y Map (Orthographic Projection)
-
-![Compton-y Map](Images/y_map_orthographic.png)
 
 ---
 
