@@ -335,23 +335,53 @@ def main():
 
         print("the min and max values are ", true_min, true_max)
 
-        fig = plt.figure(figsize=(8,6))
+        #fig = plt.figure(figsize=(8,6))
 
-        # Plot with percentile clipping for better visibility
+        ## Plot with percentile clipping for better visibility
+        #hp.mollview(
+        #    y_map_smoothed,
+        #    title="Compton-y Map",
+        #    unit="Compton-y",
+        #    cmap=plt.cm.plasma,
+        #    min=vmin,
+        #    max=vmax,
+        #    cbar=False,   # disable default colorbar
+        #    fig=fig.number 
+        #)
+
+
+        # Apply a small floor to avoid log10(0)
+        y_safe = np.where(y_map_smoothed > 0, y_map_smoothed, 1e-30)
+
+        # Compute log10
+        y_log = np.log10(y_safe)
+
+        # Compute percentiles in log space for clipping
+        # Set fixed log10 min/max
+        vmin_log = np.log10(1e-7)
+        vmax_log = np.log10(4e-4)
+
+        # True min and max for reference
+        true_min_log = y_log.min()
+        true_max_log = y_log.max()
+        print("log10 min and max values:", true_min_log, true_max_log)
+
+        # Plot
+        fig = plt.figure(figsize=(8,6))
         hp.mollview(
-            y_map_smoothed,
-            title="Compton-y Map",
-            unit="Compton-y",
-            cmap=plt.cm.inferno,
-            min=vmin,
-            max=vmax,
-            cbar=False,   # disable default colorbar
-            fig=fig.number 
+            y_log,
+            title="log10 Compton-y Map",
+            unit="log10(Compton-y)",
+            cmap=plt.cm.plasma,
+            min=vmin_log,
+            max=vmax_log,
+            cbar=False,
+            fig=fig.number
         )
 
 
        # Create ScalarMappable with true min/max
-        sm = plt.cm.ScalarMappable(cmap=plt.cm.inferno, norm=plt.Normalize(vmin=true_min, vmax=true_max))
+        sm = plt.cm.ScalarMappable(cmap=plt.cm.plasma, norm=plt.Normalize(vmin=1e-7, vmax=4e-4))
         sm.set_array([])
 
         # create a wide horizontal colorbar
@@ -467,7 +497,6 @@ def main():
 
         plt.xlabel(r'$\ell$')
         plt.ylabel(r'$\ell(\ell+1) C_\ell^{\rm tSZ} / 2\pi \; [\mu{\rm K}^2]$')
-        plt.title("Planck tSZ Shaded Region")
 
         data = np.loadtxt("Planck_CMB.txt")
         x = data[:, 0]
