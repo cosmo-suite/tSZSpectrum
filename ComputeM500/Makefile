@@ -17,7 +17,7 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 # Compile step with header dependencies
-%.o: %.cpp ComputeM500.H Particles.H
+%.o: %.cpp IO.H Particles.H
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Clean up
