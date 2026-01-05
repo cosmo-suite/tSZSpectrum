@@ -6,7 +6,7 @@ This repo contains the code for computing the tSZ power spectrum for dark matter
 1. The dark matter lightcone particle shells at all time steps (or redshifts)
 2. The dark matter halos at all time steps
 
-The dark matter lightcone particle shells are needed to compute the $M_{500}$
+The dark matter lightcone particle shells are needed to compute the $M_{500}$, which is the total mass enclosed within $R_{500}$, the radius at which the mean enclosed density equals 500 times the critical density of the Universe.
 
 
 ## Compton-y Map (Orthographic Projection)
