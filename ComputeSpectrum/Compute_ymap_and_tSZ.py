@@ -11,6 +11,7 @@ from astropy.constants import sigma_T, m_e, c
 from astropy.constants import G, M_sun
 import matplotlib.ticker as mticker  # <-- add this
 from matplotlib.lines import Line2D
+import argparse
 
 sigma_T = sigma_T.value   # convert from Quantity to float (in SI units)
 m_e = m_e.value
@@ -268,11 +269,16 @@ def compute_y_map_mpi(halos, Nside, observer_pos):
 # Main
 # ----------------------------
 def main():
-    if len(sys.argv) != 2:
-        print(f"Usage: python {os.path.basename(sys.argv[0])} <halo_folder>")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Run tSZ spectrum")
+    parser.add_argument(
+        "--halo_folder",
+        required=True,
+        help="Path to halo folder"
+    )
 
-    halo_folder = sys.argv[1]
+    args = parser.parse_args()
+
+    halo_folder = args.halo_folder
     if not os.path.isdir(halo_folder):
         print(f"Error: {halo_folder} is not a folder.")
         sys.exit(1)
