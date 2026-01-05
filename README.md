@@ -1,6 +1,13 @@
-# Cosmo Suite
+# The Thermal Sunyaev-Zel’dovich (tSZ) Power Spectrum 
 
-Welcome to **Cosmo Suite**, a collection of post-processing routines for cosmology data.
+This repo contains the code for computing the tSZ power spectrum for dark matter halos
+
+## Data needed
+1. The dark matter lightcone particle shells at all time steps (or redshifts)
+2. The dark matter halos at all time steps
+
+The dark matter lightcone particle shells are needed to compute the $M_{500}$
+
 
 ## Compton-y Map (Orthographic Projection)
 
