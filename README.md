@@ -1,7 +1,7 @@
 # The Thermal Sunyaev-Zel’dovich (tSZ) Power Spectrum 
 
 This repo contains the code for computing the tSZ power spectrum for dark matter halos.  
-
+  
 The thermal Sunyaev–Zel’dovich effect arises when CMB photons inverse-Compton scatter off hot electrons in the intracluster medium (ICM) of galaxy clusters. The tSZ spectrum is a plot showing the frequency dependence of the thermal Sunyaev–Zel’dovich (tSZ) effect on the CMB.
 
 ## Data needed
