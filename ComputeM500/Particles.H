@@ -24,20 +24,20 @@ inline void SwapEnd(float& val) {
 // Function signatures
 // -------------------------------------------------------------------
 
-void readLightConeBinaryAndExtractSolidAngle(
+void readLightConeBinary(
     const std::string& filename,
     std::vector<LightConeParticle>& solid_angle_particles,
     double xcen, double ycen, double zcen);
 
-void readHaloBinaryAndExtractSolidAngle(
+void readHaloBinary(
     const std::string& filename,
     std::vector<HaloParticle>& solid_angle_particles,
     double xcen, double ycen, double zcen);
 
 template <typename Particle>
-void extractParticlesInSolidAngle(const std::vector<Particle>& all_particles,
-                                  std::vector<Particle>& selected_particles,
-                                  double xcen, double ycen, double zcen) {
+void extractParticles(const std::vector<Particle>& all_particles,
+                      std::vector<Particle>& selected_particles,
+                      double xcen, double ycen, double zcen) {
     for (const auto& p : all_particles) {
         double dx = p.x - xcen;
         double dy = p.y - ycen;

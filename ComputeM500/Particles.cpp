@@ -9,7 +9,7 @@
 
 #include "Particles.H"
 
-void readLightConeBinaryAndExtractSolidAngle(const std::string& filename,
+void readLightConeBinary(const std::string& filename,
                                     std::vector<LightConeParticle>& solid_angle_particles,
                                     double xcen, double ycen, double zcen)
 {
@@ -55,10 +55,10 @@ void readLightConeBinaryAndExtractSolidAngle(const std::string& filename,
     }
 
     // Extract particles in solid angle
-    extractParticlesInSolidAngle(local_particles, solid_angle_particles, xcen, ycen, zcen);
+    extractParticles(local_particles, solid_angle_particles, xcen, ycen, zcen);
 }
 
-void readHaloBinaryAndExtractSolidAngle(const std::string& filename,
+void readHaloBinary(const std::string& filename,
                                     std::vector<HaloParticle>& solid_angle_particles,
                                     double xcen, double ycen, double zcen)
 {
@@ -108,5 +108,5 @@ void readHaloBinaryAndExtractSolidAngle(const std::string& filename,
     }
 
     // Extract particles in solid angle
-    extractParticlesInSolidAngle(local_particles, solid_angle_particles, xcen, ycen, zcen);
+    extractParticles(local_particles, solid_angle_particles, xcen, ycen, zcen);
 }
