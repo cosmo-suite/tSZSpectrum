@@ -130,7 +130,7 @@ double ComputeM500(const HaloParticle& halo,
                    MPI_Comm comm,
                    double& R500)
 {
-    constexpr int NBINS = 512;
+    constexpr int NBINS = 1024;
     const double dr = Rmax / NBINS;
 
     // ---------------------------------------------------

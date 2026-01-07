@@ -34,14 +34,14 @@ int main(int argc, char** argv) {
     double zcen = 3850.0;
 
     const double G = 4.30091e-9; // Mpc * (km/s)^2 / Msun
-    const double H0 = 70.0;      // km/s/Mpc
-    const double Omega_m = 0.3;
-    const double Omega_Lambda = 0.7;
+    const double H0 = 67.77;      // km/s/Mpc
+    const double Omega_m = 0.307;
+    const double Omega_Lambda = 1.0 - Omega_m;
 
     // Loop over halo files
     //for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
     //for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
-    for (size_t i = 20; i < 21; ++i) {
+    for (size_t i = 10; i < 11; ++i) {
         const auto& halo_file = halo_bin_files[i];
 
         // Start timer
