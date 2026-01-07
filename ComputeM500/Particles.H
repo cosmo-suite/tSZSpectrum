@@ -48,4 +48,22 @@ void extractParticles(const std::vector<Particle>& all_particles,
     }
 }
 
+double ComputeM500(const HaloParticle& halo,
+                   const std::vector<LightConeParticle>& local_lightcone_particles,
+                   double H_z,
+                   double G,
+                   double Rmax,
+                   MPI_Comm comm,
+                   double& R500);
+
+inline double distance(const LightConeParticle& p,
+                       const HaloParticle& h)
+{
+    double dx = p.x - h.x;
+    double dy = p.y - h.y;
+    double dz = p.z - h.z;
+    return std::sqrt(dx*dx + dy*dy + dz*dz);
+}
+
+
 #endif // PARTICLES_H

@@ -14,6 +14,8 @@ void parse_and_check_dirs_and_get_bin_files(
     std::vector<fs::path>& halo_bin_files,
     MPI_Comm comm = MPI_COMM_WORLD);
 
+double get_redshift(const fs::path& halo_file);
+
 template <typename Particle>
 void get_particle_count_for_redshift(const std::vector<Particle>& particles,
                                 const fs::path& lightcone_file,

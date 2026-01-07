@@ -130,7 +130,7 @@ double ComputeM500(const HaloParticle& halo,
                    MPI_Comm comm,
                    double& R500)
 {
-    constexpr int NBINS = 128;
+    constexpr int NBINS = 512;
     const double dr = Rmax / NBINS;
 
     // ---------------------------------------------------
@@ -138,35 +138,6 @@ double ComputeM500(const HaloParticle& halo,
     // ---------------------------------------------------
     const double rho_crit_z =
         3.0 * H_z * H_z / (8.0 * M_PI * G);
-
-std::vector<double> distances;
-for(const auto& p : local_lightcone_particles) {
-   distances.push_back(distance(p, halo));
-}
-
-std::vector<size_t> idx(distances.size());
-std::iota(idx.begin(), idx.end(), 0);
-std::sort(idx.begin(), idx.end(), [&](size_t a, size_t b){ return distances[a] < distances[b]; });
-
-double cumulative_mass = 0.0;
-for(size_t i : idx) {
-    cumulative_mass += particles[i].mass;
-    double r = distances[i];
-    double mean_density = cumulative_mass / ((4.0/3.0)*M_PI*r*r*r);
-    if(mean_density >= 500*rho_crit_z) {
-        R500 = r;
-        M500 = cumulative_mass;
-        if(rank == 0){
-                    std::cout << std::scientific << std::setprecision(3)
-                    << "Value of M500 and halo mass is "
-                    << cumulative_mass << " " << halo.mass
-                    << " " << r << " " << rho_crit_z << std::endl;
-                }
-         
-        break;
-    }
-}
-
 
     // ---------------------------------------------------
     // 2. Local radial mass histogram
@@ -198,36 +169,31 @@ for(size_t i : idx) {
      int rank;
      MPI_Comm_rank(comm, &rank);
 
-    //if(rank = 0){
-        
-
     // ---------------------------------------------------
     // 4. Cumulative mass & find R500
     // ---------------------------------------------------
         
         double cumulative_mass = 0.0;
-        R500 = 0.0;
         double M500 = 0.0;
+        R500 = 0.0;
         
         int binval = 0;
 
         for (int i = 0; i < NBINS; ++i) {
             cumulative_mass += global_mass[i];
+              // Skip bins with too few particles
+
             double r = (i + 1) * dr;
 
-            double mean_density =
-                cumulative_mass / ((4.0/3.0) * M_PI * r*r*r);
-            if(rank == 0){
-            //    std::cout << "The mean density is " << mean_density << std::endl;
-            }
-            if (cumulative_mass > 0 and mean_density <= 500.0 * rho_crit_z) {
+            double mean_density = cumulative_mass / ((4.0/3.0) * M_PI * r*r*r);
+            if (cumulative_mass > halo.mass and mean_density <= 500.0 * rho_crit_z) {
                 R500 = r;
                 M500 = cumulative_mass;
                 if(rank == 0){
                     std::cout << std::scientific << std::setprecision(3)
-                    << "Value of M500 and halo mass is "
-                    << cumulative_mass << " " << halo.mass
-                    << " " << r << " " << rho_crit_z << std::endl;
+                    << "Value of M500, halo mass, ratio, R500 is "
+                    << cumulative_mass << " " << halo.mass << " " << cumulative_mass/halo.mass << " " 
+                    << " " << r << std::endl;
                 }
                 binval = i;
                 break;
@@ -235,12 +201,10 @@ for(size_t i : idx) {
         }
 
         if(rank == 0) {
-            if(M500 < halo.mass) {
-                //std::cout << "The M500 is less than the halo mass " << M500 << " " << halo.mass << std::endl;
-            }
            
             if(binval==0) {
                 std::cout  << "Converged in first bin itself" << std::endl; 
+                exit(0);
             }
         }
 
