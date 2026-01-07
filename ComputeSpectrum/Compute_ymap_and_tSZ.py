@@ -141,7 +141,7 @@ def add_halo_to_map(y_map, halo, Nside, observer_pos, dirs=None, box_size_mpc=77
     M = halo.mass
     z = halo.redshift
     r_halo = np.array([halo.x, halo.y, halo.z])
-    R_500 = RDelta(M, z)
+    R_500 = RDelta(M, z) 
 
     # Maximum extent for integration (~5×R500)
     Rmax = 5.0 * R_500
@@ -271,20 +271,20 @@ def compute_y_map_mpi(halos, Nside, observer_pos):
 def main():
     parser = argparse.ArgumentParser(description="Run tSZ spectrum")
     parser.add_argument(
-        "--halo_folder",
+        "--halo_dir",
         required=True,
         help="Path to halo folder"
     )
 
     args = parser.parse_args()
 
-    halo_folder = args.halo_folder
-    if not os.path.isdir(halo_folder):
-        print(f"Error: {halo_folder} is not a folder.")
+    halo_dir = args.halo_dir
+    if not os.path.isdir(halo_dir):
+        print(f"Error: {halo_dir} is not a folder.")
         sys.exit(1)
 
     total_map = np.zeros(hp.nside2npix(Nside), dtype=np.float64)
-    all_files = sorted(os.listdir(halo_folder))
+    all_files = sorted(os.listdir(halo_dir))
 
     #print(all_files)
 
@@ -294,7 +294,7 @@ def main():
         fname = all_files[i]
         if not fname.endswith(".bin"):
             continue
-        path = os.path.join(halo_folder, fname)
+        path = os.path.join(halo_dir, fname)
         points = read_binary_points(path)
         z = extract_redshift_from_filename(fname)
 
