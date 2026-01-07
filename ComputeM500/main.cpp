@@ -27,12 +27,21 @@ int main(int argc, char** argv) {
         lightcone_bin_files, halo_bin_files
     );
 
+
+    // In units of Mpc
     double xcen = 3850.0;
     double ycen = 3850.0;
     double zcen = 3850.0;
 
+    const double G = 4.30091e-9; // Mpc * (km/s)^2 / Msun
+    const double H0 = 70.0;      // km/s/Mpc
+    const double Omega_m = 0.3;
+    const double Omega_Lambda = 0.7;
+
     // Loop over halo files
-    for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
+    //for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
+    //for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
+    for (size_t i = 10; i < 11; ++i) {
         const auto& halo_file = halo_bin_files[i];
 
         // Start timer
@@ -44,9 +53,12 @@ int main(int argc, char** argv) {
         readHaloBinary(halo_file.string(), halo_particles,
                                            xcen, ycen, zcen);
 
+        if(rank == 0) {
+            std::cout << "The number of halos is " << halo_particles.size() << std::endl;
+        }
         // --- Read corresponding + 2 previous + 2 next lightcone files ---
         std::vector<LightConeParticle> combined_lightcone_particles;
-        size_t start_idx = (i >= 2) ? i - 2 : 0;
+        size_t start_idx = (i >= 0) ? i - 0 : 0;
         size_t end_idx   = std::min(i + 2, lightcone_bin_files.size() - 1);
 
         for (size_t j = start_idx; j <= end_idx; ++j) {
@@ -59,11 +71,42 @@ int main(int argc, char** argv) {
             // Append to the combined vector
             combined_lightcone_particles.insert(combined_lightcone_particles.end(),
                                             lc_particles.begin(), lc_particles.end());
+
+            // --- Count particles ---
+             get_particle_count_for_redshift(combined_lightcone_particles, lightcone_bin_files[i]);
         }
 
-        // --- Count particles ---
-        get_particle_count_for_redshift(combined_lightcone_particles, lightcone_bin_files[i]);
-        get_particle_count_for_redshift(halo_particles, halo_file);
+        
+        double zval = get_redshift(halo_file);
+        double H_z = H0 * sqrt( Omega_m * pow(1+zval,3) + Omega_Lambda ); // km/s/Mpc
+
+        if (rank == 0) {
+            std::cout << "Processing redshift = " << zval << std::endl;
+        }
+
+        long int counter=0;
+        for (const auto& halo : halo_particles) {
+
+            if(halo.mass < 1e13)continue;
+
+            double R500 = 0.0;
+            double Rmax = 5.0;   // choose physically (e.g. 5 Mpc)
+
+            double M500 = ComputeM500(halo,
+                                      combined_lightcone_particles,  // local only!
+                                      H_z,
+                                      G,
+                                      Rmax,
+                                      MPI_COMM_WORLD,
+                                      R500);
+
+            counter++;
+            if (rank == 0) {
+                //std::cout << "Halo M500 = " << M500
+                  //    << "  R500 = " << R500 << " " << counter << std::endl;
+            }
+            
+        }
 
         // End timer
         double t_end = MPI_Wtime();
@@ -75,37 +118,6 @@ int main(int argc, char** argv) {
         }
     }
 
-
-
-    // Loop over files and accumulate selected particles
-    for (size_t i = 2; i < 10; i += 1) {
-        const auto& lightcone_file = lightcone_bin_files[i];
-        const auto& halo_file = halo_bin_files[i];
-
-        // Start timer
-        double t_start = MPI_Wtime();
-        if (rank == 0) std::cout << "Processing files: " << lightcone_file << " and " << halo_file << std::endl;
-
-        std::vector<LightConeParticle> lightcone_particles;
-        readLightConeBinary(lightcone_file.string(), lightcone_particles,
-                                       xcen, ycen, zcen);
-
-        std::vector<HaloParticle> halo_particles;
-        readHaloBinary(halo_file.string(), halo_particles,
-                                       xcen, ycen, zcen);
-
-        get_particle_count_for_redshift(lightcone_particles, lightcone_file);
-        get_particle_count_for_redshift(halo_particles, halo_file);
-
-        // End timer
-        double t_end = MPI_Wtime();
-        double elapsed = t_end - t_start;
-
-        if (rank == 0) {
-            std::cout << "Time taken to process file: " << lightcone_file 
-                  << " = " << elapsed << " seconds.\n";
-        } 
-    }
     MPI_Finalize();
     return 0;
 }
