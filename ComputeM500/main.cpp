@@ -41,7 +41,8 @@ int main(int argc, char** argv) {
     // Loop over halo files
     //for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
     //for (size_t i = 2; i < halo_bin_files.size() - 2; ++i) {
-    for (size_t i = 10; i < 11; ++i) {
+
+    for (size_t i = 1; i < 10; ++i) {
         const auto& halo_file = halo_bin_files[i];
 
         // Start timer
@@ -59,7 +60,7 @@ int main(int argc, char** argv) {
         // --- Read corresponding + 2 previous + 2 next lightcone files ---
         std::vector<LightConeParticle> combined_lightcone_particles;
         size_t start_idx = (i >= 1) ? i - 1 : 0;
-        size_t end_idx   = std::min(i + 2, lightcone_bin_files.size() - 1);
+        size_t end_idx   = std::min(i + 1, lightcone_bin_files.size() - 1);
 
         for (size_t j = start_idx; j <= end_idx; ++j) {
             const auto& lc_file = lightcone_bin_files[j];

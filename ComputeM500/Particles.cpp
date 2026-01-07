@@ -217,6 +217,3 @@ double ComputeM500(const HaloParticle& halo,
 
     return M500;
 }
-
-
-
